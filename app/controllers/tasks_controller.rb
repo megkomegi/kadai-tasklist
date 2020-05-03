@@ -3,7 +3,10 @@ class TasksController < ApplicationController
   before_action :correct_user, only: [:destroy]
   
   def index
-      @tasks = Task.order(id: :desc).page(params[:page])
+     if logged_in?
+        @task = current_user.tasks.build
+        @tasks = current_user.tasks.order(id: :desc).page(params[:page])
+     end
   end
 
   def show
@@ -45,7 +48,7 @@ class TasksController < ApplicationController
   def destroy
     @task.destroy
     flash[:success] = 'メッセージを削除しました。'
-    redirect_back(fallback_location: root_path)
+    redirect_to tasks_url
   end
 
   private
